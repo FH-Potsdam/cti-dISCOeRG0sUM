@@ -8,7 +8,7 @@ let canvas = undefined;
 let jim = undefined;
 const agents = [];
 function setup() {
-  canvas = createCanvas(100, 100);
+  canvas = createCanvas(800, 800);
   canvas.parent("sketch");
   jim = new Agent(random(width), random(height));
   // Agent().display(); will throw an error
