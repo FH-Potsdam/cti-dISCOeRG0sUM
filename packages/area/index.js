@@ -1,8 +1,8 @@
 /**
- * @todo change size of area on mouseOver
- * @todo change rotation of area on mouseOver
- * @todo draw area from center not upper left corner
- * @todo do something on click for the area
+ * @todo change size of area on mouseOver / OK
+ * @todo change rotation of area on mouseOver / OK
+ * @todo draw area from center not upper left corner / OK
+ * @todo do something on click for the area / OK
  */
 let x = 0;
 let canvas = undefined;
@@ -29,7 +29,7 @@ function draw() {
 function Area(x, y, w, h) {
   if (!(this instanceof Area)) {
     throw new TypeError(
-      "Area can not be called as a function. Create an instance by calling new Area(x,y,w,h)",
+      "Area can not be called as a function. Create an instance by calling new Area(x,y,w,h)"
     );
   }
   this.x = x;
@@ -52,12 +52,25 @@ function Area(x, y, w, h) {
   };
 
   this.display = function() {
-    if (this.isOver === true) {
+    push();
+    translate(this.x + this.w / 2, this.y + this.h / 2);
+
+    if (this.isOver === true && mouseIsPressed) {
+      fill(255, 255, 0);
+      rotate(radians(45));
+      scale(1.5);
+    } else if (this.isOver === true) {
       fill("#ff6347");
+      rotate(radians(45));
+      scale(1.5);
     } else {
       fill("#00ff00");
     }
-    rect(this.x, this.y, this.w, this.h);
+
+    // stroke(0);
+    rectMode(CENTER);
+    rect(0, 0, this.w, this.h);
+    pop();
   };
 }
 
