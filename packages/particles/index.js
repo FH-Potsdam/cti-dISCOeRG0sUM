@@ -1,22 +1,36 @@
 /**
- * @todo How to constrain the particle to the screen?
- * @todo How to give an particle a live time?
- * @todo How to create a new particle after 50 frames?
- * @todo How to give the particle an on click action?
+ * @todo How to constrain the particle to the screen? / OK
+ * @todo How to give an particle a live time? / OK
+ * @todo How to create a new particle after 50 frames? / OK
+ * @todo How to give the particle an on click action? / OK
  */
 let canvas = undefined;
 let jim = undefined;
+let fillColor = undefined;
 const agents = [];
 function setup() {
-  canvas = createCanvas(800, 800);
+  canvas = createCanvas(100, 100);
   canvas.parent("sketch");
-  jim = new Agent(random(width), random(height));
+  colorMode(HSB);
+  fillColor = color(200, 0, 100);
+  // jim = new Agent(random(width), random(height)); // jim ist scheiße!!
   // Agent().display(); will throw an error
 }
 
 function draw() {
-  jim.update();
-  jim.display();
+  background(250);
+  if (frameCount % 50 === 0) {
+    agents.push(new Agent(mouseX, mouseY));
+  }
+
+  for (let i = 0; i < agents.length; i++) {
+    if (agents[i].deathClock <= 0) {
+      agents.splice(i, 1);
+    }
+  }
+
+  // jim.update();
+  // jim.display();
   for (const item of agents) {
     item.update();
     item.display();
@@ -28,6 +42,11 @@ function mousePressed() {
 }
 function mouseDragged() {
   agents.push(new Agent(mouseX, mouseY));
+  fillColor = color(
+    round(random(0, 360)),
+    round(random(10, 100)),
+    round(random(10, 100))
+  );
 }
 function keyPressed() {
   if (key === "s" || key === "S") {
@@ -41,7 +60,7 @@ function keyPressed() {
 function Agent(x, y) {
   if (!(this instanceof Agent)) {
     throw new TypeError(
-      "Agent can not be called as a function. Create an instance by calling 'new Agent(x,y)'",
+      "Agent can not be called as a function. Create an instance by calling 'new Agent(x,y)'"
     );
   }
 
@@ -55,6 +74,7 @@ function Agent(x, y) {
 
   this.x = x;
   this.y = y;
+  this.deathClock = 500;
 
   /**
    * If you want the fancy noise driven movement remove
@@ -63,7 +83,16 @@ function Agent(x, y) {
   this.update = function() {
     this.x = this.x + random(-1, 1);
     this.y = this.y + random(-1, 1);
-    // constrain him to the canvas
+    this.deathClock--;
+
+    if (this.x > width || this.x < 0) {
+      this.x = width / 2;
+      this.y = height / 2;
+    }
+    if (this.y > height || this.y < 0) {
+      this.x = width / 2;
+      this.y = height / 2;
+    }
   };
 
   /**
@@ -95,7 +124,7 @@ function Agent(x, y) {
   this.display = function() {
     strokeWeight(2);
     stroke(0);
-    fill(255);
+    fill(fillColor);
     ellipse(this.x, this.y, 5);
   };
 }
